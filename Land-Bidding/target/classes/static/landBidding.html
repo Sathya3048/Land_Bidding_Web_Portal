@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy your dream</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="./landBidding.js"></script>
+</head>
+
+<body style="height: 100%;font-family: fangsong;" class="bg-img" ng-app="myApp" ng-controller="myCtrl"
+    ng-init="onload();">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info"
+        style="background-image: linear-gradient(to right,#4892b4, #755f67); background-color: #000000;">
+        <img src="./logo.png" style="height: 43px;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active menuCls pl-3" id="tableReserveTabId" menuType="MENU">
+                    <h4 class="text-white">Property Details</h4>
+                </li>
+            </ul>
+            <span class="navbar-text" style="cursor: pointer;">
+                <i class="fa fa-sign-out" style="font-size: 20px;" ng-click="logout()">Logout</i>
+            </span>
+        </div>
+    </nav>
+    <div class="col-md-12 p-0" id="viewReserveTableDivId">
+        <div class="col-md-12 p-0">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Land Owner Name</th>
+                        <th scope="col">Contact No.</th>
+                        <th scope="col">Land Address</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Area size(sq ft)</th>
+                        <th scope="col">Map Location(URL)</th>
+                        <th scope="col">Bidding Price</th>
+                        <th scope="col">Bid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="data in landDetailsListData">
+                        <td scope="col" class="text-black">{{data.uname}}</td>
+                        <td scope="col" class="text-black">{{data.phno}}</td>
+                        <td scope="col" class="text-black">{{data.address}}</td>
+                        <td scope="col" class="text-black">{{data.price}}</td>
+                        <td scope="col" class="text-black">{{data.size}}</td>
+                        <td scope="col" class="text-black"><a href="{{data.mapLocation}}" target="_blank">get
+                                location</a></td>
+                        <td scope="col" class="text-black">{{data.biddingPrice}}</td>
+                        <td scope="col" class="text-black">
+                            <button ng-show="userData.userType == 'consumer'" type="button"
+                                class="border btn-small btn-info rounded" ng-click="getLandData(data)"
+                                data-toggle="modal" data-target="#biddingModelId">Bid</button>
+                            <button ng-show="userData.userType == 'landOwer'" type="button"
+                                class="border btn-small btn-info rounded" data-toggle="modal"
+                                data-target="#biddingModelId" ng-click="getLandData(data)">View
+                                Details</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- process to pay -->
+            <div class="modal fade" id="biddingModelId">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header bg-info">
+                            <h4 class="modal-title text-white">{{userData.userType == 'landOwer' ? 'View Details' :
+                                'Bid'}}</h4>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <form ng-show="userData.userType == 'consumer'">
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="ammountId">Bidding Price</label>
+                                        <input type="text" class="form-control" id="ammountId" value="" readonly>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="paymentModeId">Bid</label>
+                                        <input type="text" class="form-control" id="bidAmmountId" value="">
+                                    </div>
+                                </div>
+                            </form>
+                            <table ng-if="userData.userType == 'landOwer'">
+                                <tr>
+                                    <th>User Name</th>
+                                    <td>{{landDetails.userDetails.uname}}</td>
+                                </tr>
+                                <tr>
+                                    <th>First Name</th>
+                                    <td>{{landDetails.userDetails.fname}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Name</th>
+                                    <td>{{landDetails.userDetails.lname}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{landDetails.userDetails.email}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact No.</th>
+                                    <td>{{landDetails.userDetails.phno}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Alternative no.</th>
+                                    <td>{{landDetails.userDetails.phno2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bidding Amount</th>
+                                    <td>{{landDetails.biddingPrice}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="reset" class="border btn btn-light" data-dismiss="modal">Close</button>
+                            <button ng-if="userData.userType == 'consumer'" type="button" class="border btn btn-info"
+                                ng-click="updateBid()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
